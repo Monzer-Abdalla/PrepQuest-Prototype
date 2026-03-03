@@ -1,98 +1,293 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import {
+  FlatList,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Colors, Typography, Spacing, BorderRadius, Shadow } from "../../src/constants/theme";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+interface ChecklistItem {
+  id: string;
+  title: string;
+  completed: boolean;
+  points: number;
+  category: string;
+}
 
-export default function HomeScreen() {
+// In a real app, these would come from Firebase.
+// For this PROTOTYPE, we use local state to prove the concept works instantly.
+const INITIAL_CHECKLIST: ChecklistItem[] = [
+  {
+    id: "1",
+    title: "Water (15 Liters)",
+    completed: false,
+    points: 10,
+    category: "Basic",
+  },
+  {
+    id: "2",
+    title: "Flashlight & Batteries",
+    completed: false,
+    points: 15,
+    category: "Gear",
+  },
+  {
+    id: "3",
+    title: "First Aid Kit",
+    completed: false,
+    points: 20,
+    category: "Health",
+  },
+  {
+    id: "4",
+    title: "Canned Food (5 Days)",
+    completed: false,
+    points: 10,
+    category: "Basic",
+  },
+  { id: "5", title: "Whistle", completed: false, points: 5, category: "Gear" },
+];
+
+export default function App() {
+  const [items, setItems] = useState<ChecklistItem[]>(INITIAL_CHECKLIST);
+  const [totalPoints, setTotalPoints] = useState<number>(0);
+  const [streak, setStreak] = useState<number>(1); // Simulating a 1-day streak
+
+  // --- CORE GAMIFICATION LOGIC ---
+  const toggleItem = (id: string) => {
+    const updatedItems = items.map((item) => {
+      if (item.id === id) {
+        const newStatus = !item.completed;
+
+        if (newStatus) {
+          setTotalPoints((prev) => prev + item.points);
+        } else {
+          setTotalPoints((prev) => prev - item.points);
+        }
+
+        return { ...item, completed: newStatus };
+      }
+      return item;
+    });
+    setItems(updatedItems);
+  };
+
+  const renderItem = ({ item }: { item: ChecklistItem }) => (
+    <TouchableOpacity
+      style={[styles.item, item.completed && styles.itemCompleted]}
+      onPress={() => toggleItem(item.id)}
+      activeOpacity={0.7}
+    >
+      <View style={[styles.checkbox, item.completed && styles.checkboxChecked]}>
+        {item.completed && <Text style={styles.checkmark}>✓</Text>}
+      </View>
+
+      <View style={styles.itemContent}>
+        <Text style={[styles.itemText, item.completed && styles.textCompleted]}>
+          {item.title}
+        </Text>
+        <Text style={styles.itemCategory}>{item.category}</Text>
+      </View>
+
+      <View style={styles.pointsBadge}>
+        <Text style={styles.pointsText}>+{item.points}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      {/* HEADER SECTION: Shows Gamification Stats */}
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.greeting}>Hello, Monzir</Text>
+          <Text style={styles.subtitle}>Let's get prepared!</Text>
+        </View>
+        <View style={styles.statsRow}>
+          <View style={styles.stat}>
+            <Text style={styles.statLabel}>🔥 Streak</Text>
+            <Text style={styles.statValue}>{streak}</Text>
+          </View>
+          <View style={styles.stat}>
+            <Text style={styles.statLabel}>🏆 Score</Text>
+            <Text style={styles.statValue}>{totalPoints}</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* PROGRESS BAR SECTION */}
+      <View style={styles.progressSection}>
+        <Text style={styles.progressTitle}>Your Kit Progress</Text>
+        <View style={styles.progressBarBg}>
+          <View
+            style={[
+              styles.progressBarFill,
+              {
+                width: `${(items.filter((i) => i.completed).length / items.length) * 100}%`,
+              },
+            ]}
+          />
+        </View>
+        <Text style={styles.progressText}>
+          {items.filter((i) => i.completed).length} of {items.length} items
+          collected
+        </Text>
+      </View>
+
+      {/* LIST SECTION */}
+      <FlatList
+        data={items}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: Colors.neutral.background,
+    paddingTop: 40,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  header: {
+    padding: Spacing.lg,
+    backgroundColor: Colors.neutral.surface,
+    borderBottomLeftRadius: BorderRadius.xl,
+    borderBottomRightRadius: BorderRadius.xl,
+    ...Shadow.lg,
+    marginBottom: Spacing.md,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  greeting: {
+    ...Typography.h1,
+    color: Colors.neutral.textPrimary,
+  },
+  subtitle: {
+    ...Typography.body,
+    color: Colors.neutral.textSecondary,
+    marginTop: Spacing.xs,
+  },
+  statsRow: {
+    flexDirection: "row",
+    marginTop: Spacing.md,
+    gap: Spacing.sm,
+  },
+  stat: {
+    backgroundColor: Colors.primary.bg,
+    paddingVertical: Spacing.sm + 4,
+    paddingHorizontal: Spacing.md + 4,
+    borderRadius: BorderRadius.md,
+    alignItems: "center",
+    flex: 1,
+  },
+  statLabel: {
+    ...Typography.caption,
+    fontWeight: "600",
+    color: Colors.primary.dark,
+    marginBottom: Spacing.xs,
+  },
+  statValue: {
+    ...Typography.h2,
+    color: Colors.primary.main,
+  },
+  progressSection: {
+    paddingHorizontal: Spacing.lg,
+    marginBottom: Spacing.md,
+  },
+  progressTitle: {
+    ...Typography.bodyMedium,
+    color: Colors.neutral.textPrimary,
+    marginBottom: Spacing.sm,
+  },
+  progressBarBg: {
+    height: 12,
+    backgroundColor: Colors.neutral.border,
+    borderRadius: BorderRadius.sm,
+    overflow: "hidden",
+  },
+  progressBarFill: {
+    height: "100%",
+    backgroundColor: Colors.primary.main,
+    borderRadius: BorderRadius.sm,
+  },
+  progressText: {
+    ...Typography.caption,
+    color: Colors.neutral.textSecondary,
+    marginTop: Spacing.xs,
+    textAlign: "right",
+  },
+  list: {
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: 40,
+  },
+  item: {
+    backgroundColor: Colors.neutral.surface,
+    padding: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: Spacing.sm + 4,
+    borderWidth: 1.5,
+    borderColor: Colors.neutral.border,
+    ...Shadow.sm,
+  },
+  itemCompleted: {
+    backgroundColor: Colors.primary.bg,
+    borderColor: Colors.primary.light,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 2,
+    borderColor: Colors.neutral.disabled,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: Spacing.md,
+  },
+  checkboxChecked: {
+    backgroundColor: Colors.primary.main,
+    borderColor: Colors.primary.main,
+  },
+  checkmark: {
+    color: Colors.neutral.surface,
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  itemContent: {
+    flex: 1,
+  },
+  itemText: {
+    ...Typography.bodyMedium,
+    color: Colors.neutral.textPrimary,
+  },
+  itemCategory: {
+    ...Typography.small,
+    color: Colors.neutral.textSecondary,
+    marginTop: 2,
+  },
+  textCompleted: {
+    textDecorationLine: "line-through",
+    color: Colors.neutral.textSecondary,
+  },
+  pointsBadge: {
+    backgroundColor: Colors.accent.amber + '20', // 20 = hex for 12.5% opacity
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: Colors.accent.amber + '40',
+  },
+  pointsText: {
+    ...Typography.small,
+    color: Colors.accent.orange,
+    fontWeight: "700",
   },
 });
