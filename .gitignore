@@ -43,3 +43,5 @@ app-example
 /android
 
 src/services/firebase.ts
+
+CLAUDE.md
