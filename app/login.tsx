@@ -31,7 +31,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleAuth = async () => {
+  const onAuthSubmit = async () => {
     if (!email || !password) {
       setError("Please enter your email and password.");
       return;
@@ -56,10 +56,10 @@ export default function LoginScreen() {
           lastActiveDate: serverTimestamp(),
           createdAt: serverTimestamp(),
         });
-        // Don't use router.replace here - let _layout.tsx handle navigation
+        
       } else {
         await signInWithEmailAndPassword(auth, email, password);
-        // Don't use router.replace here - let _layout.tsx handle navigation
+       
       }
     } catch (err: any) {
       if (err.code === "auth/invalid-email") {
@@ -86,7 +86,7 @@ export default function LoginScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.inner}>
-        {/* App Title with themed colors */}
+        
         <View style={styles.titleContainer}>
           <Text style={styles.title}>PrepQuest</Text>
           <View style={styles.titleUnderline} />
@@ -96,14 +96,14 @@ export default function LoginScreen() {
           {isSignUp ? "Create your account" : "Welcome back"}
         </Text>
 
-        {/* Error message with themed colors */}
+        
         {error ? (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>{error}</Text>
           </View>
         ) : null}
 
-        {/* Email input */}
+        
         <TextInput
           style={styles.input}
           placeholder="Email address"
@@ -115,7 +115,7 @@ export default function LoginScreen() {
           autoCorrect={false}
         />
 
-        {/* Password input */}
+        
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -126,10 +126,10 @@ export default function LoginScreen() {
           autoCapitalize="none"
         />
 
-        {/* Primary action button */}
+        
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonDisabled]}
-          onPress={handleAuth}
+          onPress={onAuthSubmit}
           disabled={loading}
           activeOpacity={0.8}
         >
@@ -142,7 +142,7 @@ export default function LoginScreen() {
           )}
         </TouchableOpacity>
 
-        {/* Toggle sign up/login */}
+        
         <TouchableOpacity
           onPress={() => {
             setIsSignUp(!isSignUp);
@@ -197,9 +197,9 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
 
-  // Error message
+  
   errorContainer: {
-    backgroundColor: "#FEF2F2", // Red-50
+    backgroundColor: "#FEF2F2", 
     borderLeftWidth: 4,
     borderLeftColor: Colors.semantic.error,
     borderRadius: BorderRadius.sm,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     color: Colors.semantic.error,
   },
 
-  // Text inputs
+  
   input: {
     ...Typography.input,
     backgroundColor: Colors.neutral.surface,
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     ...Shadow.sm,
   },
 
-  // Primary button
+  
   button: {
     backgroundColor: Colors.primary.main,
     borderRadius: BorderRadius.md,
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     color: Colors.neutral.surface,
   },
 
-  // Toggle text
+  
   toggleText: {
     ...Typography.caption,
     color: Colors.primary.main,
