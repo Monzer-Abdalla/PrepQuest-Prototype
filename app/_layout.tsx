@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { User, getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
@@ -7,6 +7,7 @@ import { app } from "../src/services/firebase";
 export default function RootLayout() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -17,6 +18,15 @@ export default function RootLayout() {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (loading) return;
+    if (user) {
+      router.replace("/(tabs)");
+    } else {
+      router.replace("/login");
+    }
+  }, [user, loading]);
 
   if (loading) {
     return (
@@ -38,7 +48,8 @@ export default function RootLayout() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      {user ? <Stack.Screen name="(tabs)" /> : <Stack.Screen name="login" />}
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="login" />
     </Stack>
   );
 }

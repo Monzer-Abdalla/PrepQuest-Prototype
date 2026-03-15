@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
   },
 
-  // Title section
+  
   titleContainer: {
     alignItems: "center",
     marginBottom: Spacing.xs,
