@@ -20,7 +20,12 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.monzer_abdalla.DisasterPrepApp"
+      "package": "com.monzer_abdalla.DisasterPrepApp",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDDz2psZDl5kU95kEPOz5OXAQyJHYHYewo"
+        }
+      }
     },
     "web": {
       "output": "static",
@@ -45,6 +50,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": false
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "5a077429-61e0-4a5b-973a-5c0831720bcc"
+      }
+    },
+    "owner": "monzer_abdalla"
   }
 }

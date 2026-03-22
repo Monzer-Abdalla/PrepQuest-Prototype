@@ -15,13 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  BorderRadius,
-  Colors,
-  Shadow,
-  Spacing,
-  Typography,
-} from "../src/constants/theme";
+import { BorderRadius, Colors, Shadow, Spacing, Typography } from "../src/constants/theme";
 import { app, db } from "../src/services/firebase";
 
 export default function LoginScreen() {
@@ -42,11 +36,7 @@ export default function LoginScreen() {
 
     try {
       if (isSignUp) {
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password,
-        );
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await setDoc(doc(db, "users", userCredential.user.uid), {
           email: email,
           displayName: email.split("@")[0],
@@ -56,10 +46,8 @@ export default function LoginScreen() {
           lastActiveDate: serverTimestamp(),
           createdAt: serverTimestamp(),
         });
-        
       } else {
         await signInWithEmailAndPassword(auth, email, password);
-       
       }
     } catch (err: any) {
       if (err.code === "auth/invalid-email") {
@@ -85,25 +73,27 @@ export default function LoginScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.inner}>
-        
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>PrepQuest</Text>
-          <View style={styles.titleUnderline} />
-        </View>
+      <View style={styles.brandZone}>
+        <Text style={styles.brandTitle}>PrepQuest</Text>
+        <Text style={styles.brandTagline}>Build your preparedness. Every day.</Text>
+      </View>
 
-        <Text style={styles.subtitle}>
-          {isSignUp ? "Create your account" : "Welcome back"}
+      <View style={styles.formCard}>
+        <Text style={styles.formHeading}>
+          {isSignUp ? "Create account" : "Welcome back"}
+        </Text>
+        <Text style={styles.formSubheading}>
+          {isSignUp
+            ? "Join PrepQuest and start your journey"
+            : "Sign in to continue your progress"}
         </Text>
 
-        
         {error ? (
           <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{error}</Text>
+            <Text style={styles.errorText}>⚠ {error}</Text>
           </View>
         ) : null}
 
-        
         <TextInput
           style={styles.input}
           placeholder="Email address"
@@ -115,7 +105,6 @@ export default function LoginScreen() {
           autoCorrect={false}
         />
 
-        
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -126,12 +115,11 @@ export default function LoginScreen() {
           autoCapitalize="none"
         />
 
-        
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonDisabled]}
           onPress={onAuthSubmit}
           disabled={loading}
-          activeOpacity={0.8}
+          activeOpacity={0.85}
         >
           {loading ? (
             <ActivityIndicator color={Colors.neutral.surface} />
@@ -142,12 +130,14 @@ export default function LoginScreen() {
           )}
         </TouchableOpacity>
 
-        
+        <View style={styles.dividerRow}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>or</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
         <TouchableOpacity
-          onPress={() => {
-            setIsSignUp(!isSignUp);
-            setError("");
-          }}
+          onPress={() => { setIsSignUp(!isSignUp); setError(""); }}
           activeOpacity={0.7}
         >
           <Text style={styles.toggleText}>
@@ -164,42 +154,53 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.neutral.background,
+    backgroundColor: Colors.primary.main,
   },
-  inner: {
+
+  brandZone: {
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: Colors.primary.main,
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: Spacing.lg,
   },
+  brandTitle: {
+    fontSize: 38,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: -0.5,
+    marginBottom: Spacing.xs,
+  },
+  brandTagline: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.78)',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
 
-  
-  titleContainer: {
-    alignItems: "center",
-    marginBottom: Spacing.xs,
+  formCard: {
+    backgroundColor: Colors.neutral.surface,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.xl,
+    paddingBottom: Spacing.xxl,
+    ...Shadow.lg,
   },
-  title: {
-    ...Typography.h1,
-    fontSize: 36,
-    fontWeight: "800",
-    color: Colors.primary.main,
-    marginBottom: Spacing.xs,
+  formHeading: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: Colors.neutral.textPrimary,
+    marginBottom: 4,
   },
-  titleUnderline: {
-    width: 60,
-    height: 4,
-    backgroundColor: Colors.primary.main,
-    borderRadius: BorderRadius.full,
-  },
-  subtitle: {
+  formSubheading: {
     ...Typography.body,
     color: Colors.neutral.textSecondary,
-    textAlign: "center",
-    marginBottom: Spacing.xl,
+    marginBottom: Spacing.lg,
   },
 
-  
   errorContainer: {
-    backgroundColor: "#FEF2F2", 
+    backgroundColor: '#FEF2F2',
     borderLeftWidth: 4,
     borderLeftColor: Colors.semantic.error,
     borderRadius: BorderRadius.sm,
@@ -209,12 +210,13 @@ const styles = StyleSheet.create({
   errorText: {
     ...Typography.caption,
     color: Colors.semantic.error,
+    fontWeight: '600',
   },
 
-  
   input: {
-    ...Typography.input,
-    backgroundColor: Colors.neutral.surface,
+    ...Typography.body,
+    color: Colors.neutral.textPrimary,
+    backgroundColor: Colors.neutral.background,
     borderWidth: 1.5,
     borderColor: Colors.neutral.border,
     borderRadius: BorderRadius.md,
@@ -224,12 +226,11 @@ const styles = StyleSheet.create({
     ...Shadow.sm,
   },
 
-  
   button: {
     backgroundColor: Colors.primary.main,
     borderRadius: BorderRadius.md,
-    paddingVertical: Spacing.md,
-    alignItems: "center",
+    paddingVertical: 15,
+    alignItems: 'center',
     marginBottom: Spacing.md,
     ...Shadow.md,
   },
@@ -239,13 +240,29 @@ const styles = StyleSheet.create({
   buttonText: {
     ...Typography.button,
     color: Colors.neutral.surface,
+    fontSize: 16,
   },
 
-  
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.neutral.border,
+  },
+  dividerText: {
+    ...Typography.caption,
+    color: Colors.neutral.textSecondary,
+    marginHorizontal: Spacing.sm,
+  },
+
   toggleText: {
     ...Typography.caption,
     color: Colors.primary.main,
-    textAlign: "center",
-    fontWeight: "600",
+    textAlign: 'center',
+    fontWeight: '700',
   },
 });
