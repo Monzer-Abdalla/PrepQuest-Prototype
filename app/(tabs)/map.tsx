@@ -213,6 +213,12 @@ export default function MapScreen() {
               }}
               activeOpacity={0.75}
             >
+              {t !== "All" && (
+                <View style={[
+                  styles.filterDot,
+                  { backgroundColor: filter === t ? 'rgba(255,255,255,0.8)' : TYPE_COLORS[t as ResourceType] }
+                ]} />
+              )}
               <Text style={[styles.filterText, filter === t && { color: "#fff" }]}>
                 {t}
               </Text>
@@ -334,12 +340,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.md,
     paddingBottom: Spacing.md,
-    backgroundColor: Colors.primary.main,
+    backgroundColor: Colors.primary.dark,
   },
   headerTitle: {
     fontSize: 22,
     fontWeight: "800",
     color: "#FFFFFF",
+    letterSpacing: -0.3,
   },
   headerSub: {
     fontSize: 13,
@@ -357,12 +364,20 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.neutral.border,
   },
   filterChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 7,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: BorderRadius.full,
     borderWidth: 1.5,
     borderColor: Colors.neutral.border,
     backgroundColor: Colors.neutral.surface,
+    gap: 5,
+  },
+  filterDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
   },
   filterText: {
     fontSize: 13,

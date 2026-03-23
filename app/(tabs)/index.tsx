@@ -241,9 +241,11 @@ export default function HomeScreen() {
       </View>
       <View style={styles.itemContent}>
         <Text style={[styles.itemText, item.completed && styles.textCompleted]}>{item.title}</Text>
-        <Text style={[styles.itemCategory, { color: CATEGORY_COLORS[item.category] ?? Colors.neutral.textSecondary }]}>
-          {item.category}
-        </Text>
+        <View style={[styles.categoryPill, { backgroundColor: (CATEGORY_COLORS[item.category] ?? Colors.neutral.disabled) + '22' }]}>
+          <Text style={[styles.categoryPillText, { color: CATEGORY_COLORS[item.category] ?? Colors.neutral.textSecondary }]}>
+            {item.category.toUpperCase()}
+          </Text>
+        </View>
       </View>
       <View style={styles.pointsBadge}>
         <Text style={styles.pointsText}>+{item.points}</Text>
@@ -265,6 +267,8 @@ export default function HomeScreen() {
   const listHeader = (
     <View>
       <View style={styles.hero}>
+        <View style={styles.heroDecorA} pointerEvents="none" />
+        <View style={styles.heroDecorB} pointerEvents="none" />
         <View style={styles.heroTop}>
           <View style={styles.heroTextBlock}>
             <Text style={styles.heroGreeting}>{Strings[lang].greeting}, {displayName || 'Preparer'}</Text>
@@ -349,7 +353,9 @@ export default function HomeScreen() {
       )}
 
       <View style={styles.sectionHeader}>
+        <View style={styles.sectionAccentBar} />
         <Text style={styles.sectionTitle}>FULL KIT CHECKLIST</Text>
+        <View style={{ flex: 1 }} />
         <Text style={styles.sectionCount}>{items.length} items</Text>
       </View>
     </View>
@@ -411,6 +417,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.md,
     paddingBottom: Spacing.xl + 16,
+    overflow: 'hidden',
+  },
+  heroDecorA: {
+    position: 'absolute',
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    top: -110,
+    right: -70,
+  },
+  heroDecorB: {
+    position: 'absolute',
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    bottom: -30,
+    left: -40,
   },
   heroTop: {
     flexDirection: 'row',
@@ -465,10 +490,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   heroStatValue: {
-    fontSize: 34,
+    fontSize: 44,
     fontWeight: '800',
     color: '#FFFFFF',
-    lineHeight: 38,
+    lineHeight: 48,
   },
   heroStatLabel: {
     fontSize: 12,
@@ -507,7 +532,7 @@ const styles = StyleSheet.create({
     color: Colors.primary.main,
   },
   progressBarBg: {
-    height: 8,
+    height: 12,
     backgroundColor: Colors.neutral.border,
     borderRadius: BorderRadius.full,
     overflow: 'hidden',
@@ -584,11 +609,17 @@ const styles = StyleSheet.create({
 
   sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: Spacing.lg,
-    marginTop: Spacing.lg,
+    marginTop: Spacing.xl,
     marginBottom: Spacing.sm,
+    gap: Spacing.xs,
+  },
+  sectionAccentBar: {
+    width: 3,
+    height: 14,
+    borderRadius: 2,
+    backgroundColor: Colors.primary.main,
   },
   sectionTitle: {
     fontSize: 11,
@@ -653,6 +684,18 @@ const styles = StyleSheet.create({
   itemText: {
     ...Typography.bodyMedium,
     color: Colors.neutral.textPrimary,
+  },
+  categoryPill: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    marginTop: 4,
+  },
+  categoryPillText: {
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 0.7,
   },
   itemCategory: {
     fontSize: 11,

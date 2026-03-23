@@ -135,7 +135,10 @@ export default function ProfileScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
 
         <View style={styles.banner}>
+          <View style={styles.bannerDecorA} pointerEvents="none" />
+          <View style={styles.bannerDecorB} pointerEvents="none" />
           <Text style={styles.bannerTitle}>My Profile</Text>
+          <Text style={styles.bannerSub}>Your preparedness journey</Text>
         </View>
 
         <View style={styles.avatarRow}>
@@ -192,20 +195,21 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        <View style={styles.statsRow}>
-          <View style={[styles.statCard, styles.statStreak]}>
-            <Text style={styles.statValue}>{userData.streakCount}</Text>
-            <Text style={styles.statLabel}>🔥 Streak</Text>
+        <View style={styles.statsGrid}>
+          <View style={styles.statGridCard}>
+            <View style={[styles.statGridAccent, { backgroundColor: Colors.accent.orange }]} />
+            <Text style={styles.statGridValue}>{userData.streakCount}</Text>
+            <Text style={styles.statGridLabel}>Day Streak</Text>
           </View>
-          <View style={styles.statDivider} />
-          <View style={[styles.statCard, styles.statPoints]}>
-            <Text style={styles.statValue}>{userData.totalPoints}</Text>
-            <Text style={styles.statLabel}>🏆 Points</Text>
+          <View style={styles.statGridCard}>
+            <View style={[styles.statGridAccent, { backgroundColor: Colors.accent.amber }]} />
+            <Text style={styles.statGridValue}>{userData.totalPoints}</Text>
+            <Text style={styles.statGridLabel}>Total Points</Text>
           </View>
-          <View style={styles.statDivider} />
-          <View style={[styles.statCard, styles.statDone]}>
-            <Text style={styles.statValue}>{completedCount}</Text>
-            <Text style={styles.statLabel}>✓ Done</Text>
+          <View style={styles.statGridCard}>
+            <View style={[styles.statGridAccent, { backgroundColor: Colors.primary.main }]} />
+            <Text style={styles.statGridValue}>{completedCount}</Text>
+            <Text style={styles.statGridLabel}>Items Done</Text>
           </View>
         </View>
 
@@ -277,44 +281,71 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   banner: {
-    height: 148,
-    backgroundColor: Colors.primary.main,
+    height: 168,
+    backgroundColor: Colors.primary.dark,
     paddingTop: Spacing.xl,
     paddingHorizontal: Spacing.lg,
     justifyContent: 'flex-start',
-    borderBottomRightRadius: 36,
+    borderBottomRightRadius: 40,
+    overflow: 'hidden',
+  },
+  bannerDecorA: {
+    position: 'absolute',
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    top: -80,
+    right: -50,
+  },
+  bannerDecorB: {
+    position: 'absolute',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    bottom: 10,
+    left: -20,
   },
   bannerTitle: {
-    ...Typography.h2,
+    fontSize: 26,
+    fontWeight: '800',
     color: Colors.neutral.surface,
+    letterSpacing: -0.3,
+  },
+  bannerSub: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.72)',
+    fontWeight: '500',
+    marginTop: 3,
   },
   avatarRow: {
     alignItems: 'center',
     marginTop: -52,
   },
   avatarOuter: {
-    width: 92,
-    height: 92,
-    borderRadius: 46,
-    borderWidth: 3,
-    borderColor: '#FFFFFF',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 4,
+    borderColor: Colors.primary.light,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    ...Shadow.md,
-    elevation: 8,
+    ...Shadow.lg,
+    elevation: 10,
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 86,
+    height: 86,
+    borderRadius: 43,
     backgroundColor: Colors.primary.bg,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
-    fontSize: 30,
-    fontWeight: '700',
+    fontSize: 34,
+    fontWeight: '800',
     color: Colors.primary.dark,
   },
   nameBlock: {
@@ -398,44 +429,41 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 0.5,
   },
-  statsRow: {
+  statsGrid: {
     flexDirection: 'row',
     marginHorizontal: Spacing.lg,
     marginBottom: Spacing.lg,
-    backgroundColor: Colors.neutral.surface,
-    borderRadius: BorderRadius.sm,
-    ...Shadow.sm,
-    overflow: 'hidden',
+    gap: Spacing.sm,
   },
-  statCard: {
+  statGridCard: {
     flex: 1,
+    backgroundColor: Colors.neutral.surface,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
     alignItems: 'center',
-    paddingVertical: Spacing.md,
-    borderLeftWidth: 3,
+    overflow: 'hidden',
+    ...Shadow.md,
   },
-  statStreak: {
-    borderLeftColor: Colors.accent.orange,
+  statGridAccent: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 3,
   },
-  statPoints: {
-    borderLeftColor: Colors.accent.amber,
-  },
-  statDone: {
-    borderLeftColor: Colors.primary.main,
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: Colors.neutral.border,
-    marginVertical: Spacing.sm,
-  },
-  statValue: {
-    fontSize: 28,
-    fontWeight: 'bold' as const,
+  statGridValue: {
+    fontSize: 30,
+    fontWeight: '800',
     color: Colors.neutral.textPrimary,
+    marginTop: Spacing.xs,
   },
-  statLabel: {
-    ...Typography.small,
+  statGridLabel: {
+    fontSize: 10,
+    fontWeight: '600',
     color: Colors.neutral.textSecondary,
-    marginTop: 2,
+    marginTop: 3,
+    textAlign: 'center',
+    letterSpacing: 0.3,
   },
   section: {
     marginHorizontal: Spacing.lg,

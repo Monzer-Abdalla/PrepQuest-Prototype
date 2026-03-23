@@ -74,6 +74,8 @@ export default function LoginScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.brandZone}>
+        <View style={styles.brandDecorA} pointerEvents="none" />
+        <View style={styles.brandDecorB} pointerEvents="none" />
         <Text style={styles.brandTitle}>PrepQuest</Text>
         <Text style={styles.brandTagline}>Build your preparedness. Every day.</Text>
       </View>
@@ -94,10 +96,11 @@ export default function LoginScreen() {
           </View>
         ) : null}
 
+        <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
         <TextInput
           style={styles.input}
-          placeholder="Email address"
-          placeholderTextColor={Colors.neutral.textSecondary}
+          placeholder="you@example.com"
+          placeholderTextColor={Colors.neutral.disabled}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -105,10 +108,11 @@ export default function LoginScreen() {
           autoCorrect={false}
         />
 
+        <Text style={styles.inputLabel}>PASSWORD</Text>
         <TextInput
           style={styles.input}
-          placeholder="Password"
-          placeholderTextColor={Colors.neutral.textSecondary}
+          placeholder="••••••••"
+          placeholderTextColor={Colors.neutral.disabled}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -159,16 +163,35 @@ const styles = StyleSheet.create({
 
   brandZone: {
     flex: 1,
-    backgroundColor: Colors.primary.main,
+    backgroundColor: Colors.primary.dark,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: Spacing.lg,
+    overflow: 'hidden',
+  },
+  brandDecorA: {
+    position: 'absolute',
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    top: -120,
+    right: -80,
+  },
+  brandDecorB: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    bottom: -40,
+    left: -60,
   },
   brandTitle: {
-    fontSize: 38,
+    fontSize: 44,
     fontWeight: '800',
     color: '#FFFFFF',
-    letterSpacing: -0.5,
+    letterSpacing: -1,
     marginBottom: Spacing.xs,
   },
   brandTagline: {
@@ -180,12 +203,20 @@ const styles = StyleSheet.create({
 
   formCard: {
     backgroundColor: Colors.neutral.surface,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.xl,
     paddingBottom: Spacing.xxl,
     ...Shadow.lg,
+  },
+  inputLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: Colors.neutral.textSecondary,
+    letterSpacing: 1.1,
+    marginBottom: 6,
+    marginTop: 4,
   },
   formHeading: {
     fontSize: 22,
@@ -228,10 +259,11 @@ const styles = StyleSheet.create({
 
   button: {
     backgroundColor: Colors.primary.main,
-    borderRadius: BorderRadius.md,
-    paddingVertical: 15,
+    borderRadius: BorderRadius.xl,
+    paddingVertical: 16,
     alignItems: 'center',
     marginBottom: Spacing.md,
+    marginTop: Spacing.xs,
     ...Shadow.md,
   },
   buttonDisabled: {
